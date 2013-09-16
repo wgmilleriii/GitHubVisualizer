@@ -77,8 +77,10 @@ var ghcs = {
             , labelPattern : "%n <%e>"  // pattern for label of user
             , showCommitMessage : false // show commit message
             , skipEmptyDate : true // skip empty date
-            , blendingLighter : true
-            , asPlasma : false
+            , blendingLighter : false
+            , asPlasma : true
+            , showTrack : true
+            , fadingTail : true
         }
     },
 

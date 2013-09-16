@@ -90,6 +90,11 @@
             if (n.fixed) {
                 n.x = xW(n.x);
                 n.y = yH(n.y);
+                /*if (n.statuses[d.sha].status == TYPE_STATUS_FILE.added) {
+                    n.x = a.x;
+                    n.y = a.y;
+                }*/
+                n.paths = [{x: n.x, y: n.y}];
             }
 
             n.size += 2;
@@ -146,13 +151,13 @@
 
     function loop() {
 
-        if (pause)
-            return;
-
         if (stop) {
             killWorker();
             return;
         }
+
+        if (pause)
+            return;
 
         var dl, dr;
 
@@ -460,6 +465,15 @@
 
         d.visible && !d.opacity
             && (d.visible = false);
+
+        if (d.paths) {
+            d.pathLife = (d.pathLife || 0);
+            if (d.pathLife++ > 0) {
+                d.pathLife = 0;
+                if (d.paths.length)
+                    d.paths.shift();
+            }
+        }
     }
 
     function sortBySize(a, b) {
@@ -575,6 +589,69 @@
 
                 x = Math.floor(d.x);
                 y = Math.floor(d.y);
+
+                if (setting.fadingTail && setting.showTrack) {
+                    //bufCtx.save();
+                    bufCtx.lineCap="round";
+                    //bufCtx.lineJoin="round";
+                    bufCtx.lineWidth = (radius(nr(d)) / 4)  || 1;
+                    bufCtx.fillStyle = "none";
+                    bufCtx.strokeStyle = c.toString();
+
+                    var rs = d.paths.slice(0).reverse(),
+                        lrs = rs.length,
+                        cura = bufCtx.globalAlpha;
+
+                    for (var p in rs) {
+                        if (!rs.hasOwnProperty(p))
+                            continue;
+
+                        bufCtx.beginPath();
+                        if (p < 1)
+                            bufCtx.moveTo(x, y);
+                        else
+                            bufCtx.moveTo(
+                                Math.floor(rs[p - 1].x),
+                                Math.floor(rs[p - 1].y)
+                            );
+                        bufCtx.lineTo(
+                            Math.floor(rs[p].x),
+                            Math.floor(rs[p].y)
+                        );
+                        bufCtx.closePath();
+                        bufCtx.globalAlpha = ((lrs - p)/lrs) * cura;
+                        //bufCtx.strokeStyle = "rgba(" + [c.r, c.g, c.b, (lrs - p)/lrs ] + ")";
+                        bufCtx.stroke();
+                    }
+                    //bufCtx.restore();
+                    bufCtx.globalAlpha = cura;
+                }
+
+                if (!setting.fadingTail && setting.showTrack) {
+                    bufCtx.save();
+                    bufCtx.beginPath();
+                    bufCtx.lineCap="round";
+                    bufCtx.lineJoin="round";
+                    bufCtx.strokeStyle = c.toString();
+                    bufCtx.lineWidth = (radius(nr(d)) / 4)  || 1;
+
+                    var rs = d.paths.slice(0).reverse(),
+                        lrs = rs.length;
+
+                    bufCtx.moveTo(x, y);
+                    for (var p in rs) {
+                        if (!rs.hasOwnProperty(p))
+                            continue;
+
+                        bufCtx.lineTo(
+                            Math.floor(rs[p].x),
+                            Math.floor(rs[p].y)
+                        );
+                    }
+                    //bufCtx.closePath();
+                    bufCtx.stroke();
+                    bufCtx.restore();
+                }
 
                 s = radius(nr(d)) * (setting.showHalo ? 8 : 1);
                 setting.showHalo
@@ -731,6 +808,10 @@
                 d.x -= x;
                 d.y -= y;
             }
+            d.paths && (d.flash/* || d.paths.length > 2*/) && d.paths.push({
+                x : d.x,
+                y : d.y
+            });
         };
     }
 
