@@ -6,7 +6,7 @@ html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address
 /** взято с github.com */
 
 @font-face {
-    font-family: 'Octicons Regular';
+    font-family: sans-serif;
     src: url(resource/github_webfont.eot);
     src: url(resource/github_webfont_ie.eot) format("embedded-opentype"),
          url(resource/github_webfont.woff) format("woff"),
@@ -17,7 +17,7 @@ html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address
 }
 
 .mini-icon, .mega-icon {
-    font-family: 'Octicons Regular';
+    font-family: sans-serif;
     font-weight: normal;
     font-style: normal;
     display: inline-block;
@@ -119,7 +119,7 @@ label {
     z-index: 11;
     padding: 5px;
     vertical-align: middle;
-    border-radius: 0 0 3px 0;
+    border-radius: 0 0 4px 0;
     width: 100%;
 }
 

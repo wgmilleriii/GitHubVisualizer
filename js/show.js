@@ -941,9 +941,9 @@
         }
 
         if (restart)
-            return console.log('tick finish');
+            return console.log('tick finish!');
 
-        console.log('resume');
+        console.log('resume!');
         _forceAuthor.resume();
         _force.resume();
     }
